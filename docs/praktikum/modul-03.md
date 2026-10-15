@@ -1,6 +1,7 @@
 # Dokumen Teknis Modul 3 — TypeScript dan Komponen React
 
-**Nama/NIM**   : Elisabeth Nainggolan / 105224037  
+**Nama**   : Elisabeth Nainggolan 
+**Nim**      : 105224037
 **Repositori** : https://github.com/Elisabethngl/105224037_PraktikumPemWeb  
 **Branch**     : `main` (hasil penggabungan dari `praktikum/modul-03`)  
 
