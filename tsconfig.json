@@ -30,5 +30,13 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    "modul-2",
+    "modul-3",
+    "modul-4",
+    "105224037_PraktikumPemWeb",
+    "Latihan-GIt-Pemweb-cs24",
+    "belajar-branch"
+  ]
 }

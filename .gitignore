@@ -32,6 +32,7 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # vercel
 .vercel
@@ -39,3 +40,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local subfolders
+modul-2/
+modul-3/
+modul-4/
+105224037_PraktikumPemWeb/
+Latihan-GIt-Pemweb-cs24/
+belajar-branch/
