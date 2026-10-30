@@ -113,7 +113,7 @@ Sistem AgroMarket diuji menggunakan **8 skenario kasus uji** yang mencakup pengu
 
 Bukti pengujian saat atribut `novalidate` disuntikkan ke elemen `<form>` pada DevTools Elements untuk melumpuhkan seluruh validasi bawaan HTML5 browser. Ketiga galat server tampil serentak di bawah kolom yang bersangkutan dengan penandaan aksesibilitas ARIA:
 
-![Bukti Pengujian Galat Per Kolom](/docs/hasil%20screenshot/galat-per-kolom.png)
+![Bukti Pengujian Galat Per Kolom](../hasil%20screenshot/galat-per-kolom.png)
 *Gambar 1: Tangkapan layar formulir `/katalog/tambah` ketika validasi browser dilewati dengan atribut `novalidate`, menampilkan galat per kolom dari Zod 4 sisi server.*
 
 > **Analisis Aksesibilitas WAI-ARIA pada Formulir:**
@@ -155,7 +155,7 @@ Setiap sesi yang diterbitkan oleh fungsi `buatSesi(email)` dikirimkan ke peramba
 
 Bukti keberhasilan pembentukan *cookie* sesi saat masuk dengan akun demo pengelola AgroMarket. Nilai token ID disamarkan (*masked*) dengan pola `7c9f****-****-4a21-****-b839ef4a****` demi menjaga kerahasiaan sesuai pedoman evaluasi:
 
-![Inspeksi DevTools Cookie Sesi](/docs/hasil%20screenshot/cookie-devtools.png)
+![Inspeksi DevTools Cookie Sesi](../hasil%20screenshot/cookie-devtools.png)
 *Gambar 2: Panel Application > Cookies dan Network > Set-Cookie yang menunjukkan atribut HttpOnly=true, SameSite=Lax, Max-Age=28800, serta pembuktian document.cookie bernilai kosong di Console.*
 
 ---
@@ -166,7 +166,7 @@ Bukti keberhasilan pembentukan *cookie* sesi saat masuk dengan akun demo pengelo
 - **Prosedur Pengujian**: Pengguna masuk dengan akun demo sah, membuka halaman `/katalog/tambah`, lalu melalui panel DevTools Application > Cookies secara manual memanipulasi nilai `sesi` menjadi nilai sembarang: `token-sesi-palsu-rekayasa-attacker-12345`. Kemudian formulir item dikirimkan dengan data produk yang valid.
 - **Hasil Pengujian**: Berkas `proxy.ts` meloloskan permintaan karena kunci *cookie* `"sesi"` ada dalam permintaan HTTP. Namun, saat permintaan tiba di Server Action `simpanItem` pada `app/katalog/actions.ts`, pemanggilan `bacaSesi()` mengeksekusi pencarian `penyimpanan.get("token-sesi-palsu-...")` yang menghasilkan nilai `undefined` (mengembalikan `null`). Server Action langsung membatalkan mutasi data dan mengembalikan `{ pesan: "Silakan masuk terlebih dahulu." }`. Produk palsu tidak pernah tersimpan di katalog.
 
-![Bukti Penolakan Cookie Palsu](/docs/hasil%20screenshot/uji-cookie-palsu.png)
+![Bukti Penolakan Cookie Palsu](../hasil%20screenshot/uji-cookie-palsu.png)
 *Gambar 3: Penolakan mutasi data oleh Server Action saat nilai cookie sesi direkayasa/dipalsukan di peramban.*
 
 #### 2. Uji Logout dan Penolakan Cookie Lama (`uji-cookie-lama.png`)
@@ -182,7 +182,7 @@ Bukti keberhasilan pembentukan *cookie* sesi saat masuk dengan akun demo pengelo
   ```
   Saat pengguna mencoba membuka kembali halaman dengan *cookie* lama, `HalamanTambahItem()` (Server Component) mengeksekusi `await bacaSesi()`. Karena ID telah dihapus permanen dari memori server (`penyimpanan`), fungsi mengembalikan `null` dan server mengeksekusi `redirect("/masuk")`. Pengguna ditolak dan dipaksa kembali ke halaman login.
 
-![Bukti Penolakan Cookie Lama Setelah Logout](/docs/hasil%20screenshot/uji-cookie-lama.png)
+![Bukti Penolakan Cookie Lama Setelah Logout](../hasil%20screenshot/uji-cookie-lama.png)
 *Gambar 4: Pengalihan otomatis ke halaman /masuk saat cookie sesi lama digunakan kembali setelah proses logout.*
 
 ---
