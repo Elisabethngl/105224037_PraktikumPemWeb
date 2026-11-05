@@ -1,9 +1,11 @@
-// Server Component: tanpa "use client", tanpa useState dan useEffect
+// Server Component: tanpa "use client", membaca langsung dari database via lib/data
 import Link from "next/link";
-import { daftarItem } from "@/lib/data";
+import { ambilDaftarItem } from "@/lib/data";
 
-export default function ItemTerbaru() {
-  const terbaru = daftarItem.slice(0, 3);
+export default async function ItemTerbaru() {
+  const items = await ambilDaftarItem();
+  const terbaru = items.slice(0, 3);
+
   return (
     <ul className="grid gap-4 sm:grid-cols-3">
       {terbaru.map((item) => (
@@ -26,9 +28,9 @@ export default function ItemTerbaru() {
             {item.deskripsi}
           </p>
           <p className="mt-4 text-sm font-bold text-emerald-700">
-            Rp {item.harga.toLocaleString("id-ID")}
+            {item.harga ? `Rp ${item.harga.toLocaleString("id-ID")}` : "Mitra AgroMarket"}
             <span className="text-xs font-normal text-gray-500">
-              /{item.satuan}
+              {item.satuan ? `/${item.satuan}` : ""}
             </span>
           </p>
         </li>

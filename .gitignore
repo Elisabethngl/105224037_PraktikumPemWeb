@@ -33,6 +33,7 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 !.env.example
+/generated/prisma
 
 # vercel
 .vercel
@@ -48,3 +49,9 @@ modul-4/
 105224037_PraktikumPemWeb/
 Latihan-GIt-Pemweb-cs24/
 belajar-branch/
+
+# AI agent tool directories
+.agents/
+.claude/
+.cursor/
+.devin/

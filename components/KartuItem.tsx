@@ -1,7 +1,7 @@
 import Link from "next/link";
-import type { Produk, KategoriProduk } from "@/lib/tipe";
+import type { Produk } from "@/lib/tipe";
 
-const badgeWarna: Record<KategoriProduk, string> = {
+const badgeWarna: Record<string, string> = {
   "Pupuk Tani": "bg-emerald-100 text-emerald-800 border-emerald-300",
   "Obat Racun & Hama": "bg-red-100 text-red-800 border-red-300",
   "Benih Unggul": "bg-amber-100 text-amber-800 border-amber-300",
@@ -11,6 +11,8 @@ const badgeWarna: Record<KategoriProduk, string> = {
 export default function KartuItem({ item }: { item: Produk }) {
   const badgeClass =
     badgeWarna[item.kategori] ?? "bg-gray-100 text-gray-800 border-gray-300";
+  const hargaDisplay = item.harga ? `Rp ${item.harga.toLocaleString("id-ID")}` : "Hubungi Mitra";
+  const satuanDisplay = item.satuan ? `/${item.satuan}` : "";
 
   return (
     <article className="h-full rounded-lg border p-6 shadow-xs flex flex-col justify-between bg-white">
@@ -32,7 +34,7 @@ export default function KartuItem({ item }: { item: Produk }) {
         <div>
           <span className="text-xs text-gray-500">Harga Satuan:</span>
           <p className="text-base font-bold text-emerald-700">
-            Rp {item.harga.toLocaleString("id-ID")} <span className="text-xs font-normal text-gray-500">/{item.satuan}</span>
+            {hargaDisplay} <span className="text-xs font-normal text-gray-500">{satuanDisplay}</span>
           </p>
         </div>
         <div>

@@ -4,20 +4,31 @@ export type KategoriProduk =
   | "Benih Unggul"
   | "Alat Pertanian";
 
+export interface Ulasan {
+  id: number;
+  nama: string;
+  nilai: number;
+  komentar: string;
+  dibuatPada?: Date;
+  itemId: number;
+}
+
 export interface Produk {
   id: number;
   judul: string;
-  kategori: KategoriProduk;
+  kategori: KategoriProduk | string;
   deskripsi: string;
-  harga: number;
-  satuan: string;
+  harga?: number;
+  satuan?: string;
   tersedia: boolean;
   bahanAktif?: string;
   aturanDosis?: string;
   peringatanBahaya?: string;
   nomorRegistrasi?: string;
   asalDaerah?: string;
-  gambar?: string;
+  gambar: string | null;
+  dibuatPada?: Date;
+  ulasan?: Ulasan[];
 }
 
 // Alias untuk kompatibilitas

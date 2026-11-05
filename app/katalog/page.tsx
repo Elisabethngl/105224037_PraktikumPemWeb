@@ -1,15 +1,19 @@
 import type { Metadata } from "next";
+import { connection } from "next/server";
 import Link from "next/link";
 import Bagian from "@/components/Bagian";
 import DaftarItem from "@/components/DaftarItem";
-import { daftarItem } from "@/lib/data";
+import { ambilDaftarItem } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "Katalog Sarana Pertanian | AgroMarket",
   description: "Daftar lengkap pupuk subsidi & non-subsidi, obat pengendali hama, benih tanaman, dan alat pertanian.",
 };
 
-export default function HalamanKatalog() {
+export default async function HalamanKatalog() {
+  await connection();
+  const items = await ambilDaftarItem();
+
   return (
     <main id="konten" className="mx-auto max-w-6xl p-4 space-y-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b pb-4">
@@ -28,7 +32,7 @@ export default function HalamanKatalog() {
       </div>
 
       <Bagian id="daftar" judul="Daftar Sarana Pertanian Unggulan">
-        <DaftarItem items={daftarItem} />
+        <DaftarItem items={items} />
       </Bagian>
     </main>
   );

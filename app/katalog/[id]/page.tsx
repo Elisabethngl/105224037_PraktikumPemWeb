@@ -1,94 +1,96 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { cariItem, daftarItem } from "@/lib/data";
+import Link from "next/link";
+import { ambilItem } from "@/lib/data";
+import { hapusItem } from "@/app/katalog/actions";
+import { hapusUlasan } from "@/app/katalog/ulasan-actions";
+import FormUlasan from "@/components/FormUlasan";
 
-export function generateStaticParams() {
-  return daftarItem.map((item) => ({ id: String(item.id) }));
-}
-
-export default async function HalamanDetailItem({
+export default async function DetailItem({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = await params;
-  if (!/^[1-9]\d*$/.test(id)) notFound();
-
-  const item = cariItem(Number(id));
+  const id = Number((await params).id);
+  if (!Number.isInteger(id) || id <= 0) notFound();
+  const item = await ambilItem(id);
   if (!item) notFound();
 
   return (
-    <main id="konten" className="space-y-6">
-      <div className="border-b pb-4">
-        <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
-          {item.kategori}
-        </span>
-        <h1 className="mt-3 text-3xl font-extrabold text-gray-900">{item.judul}</h1>
-        <p className="mt-2 text-2xl font-bold text-emerald-700">
-          Rp {item.harga.toLocaleString("id-ID")}{" "}
-          <span className="text-sm font-normal text-gray-500">/{item.satuan}</span>
-        </p>
+    <main id="konten" className="mx-auto max-w-3xl p-4 space-y-6">
+      <div className="border-b pb-4 flex justify-between items-start gap-4">
+        <div>
+          <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
+            {item.kategori}
+          </span>
+          <h1 className="mt-2 text-3xl font-extrabold text-gray-900">{item.judul}</h1>
+          <p className="mt-1 text-sm text-gray-500">
+            Status: {item.tersedia ? "Tersedia di Etalase" : "Stok Habis"}
+          </p>
+        </div>
+        <form action={hapusItem.bind(null, item.id)}>
+          <button
+            type="submit"
+            className="rounded bg-red-700 px-3.5 py-1.5 text-sm font-semibold text-white hover:bg-red-800 shadow-sm transition"
+          >
+            Hapus Item
+          </button>
+        </form>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
-        <div className="space-y-4">
-          <section>
-            <h2 className="text-base font-semibold text-gray-800">Deskripsi Produk</h2>
-            <p className="mt-1 text-gray-700 leading-relaxed">{item.deskripsi}</p>
-          </section>
+      <div className="rounded-lg border p-4 bg-gray-50 text-gray-700 leading-relaxed">
+        <h2 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">
+          Deskripsi & SOP Aplikasi Produk
+        </h2>
+        <p>{item.deskripsi}</p>
+      </div>
 
-          {item.bahanAktif && (
-            <section>
-              <h2 className="text-base font-semibold text-gray-800">Komposisi & Bahan Aktif</h2>
-              <p className="mt-1 font-mono text-sm text-gray-700 bg-gray-50 p-2.5 rounded border">
-                {item.bahanAktif}
-              </p>
-            </section>
-          )}
+      <div className="mt-8 border-t pt-6">
+        <h2 className="text-xl font-bold text-gray-900">
+          Ulasan Petani & Mitra Tani ({item.ulasan?.length ?? 0})
+        </h2>
 
-          {item.aturanDosis && (
-            <section>
-              <h2 className="text-base font-semibold text-gray-800">Panduan Dosis & Takaran Aplikasi</h2>
-              <p className="mt-1 text-sm text-gray-700 bg-emerald-50/50 p-3 rounded border border-emerald-200">
-                {item.aturanDosis}
-              </p>
-            </section>
-          )}
-        </div>
+        {item.ulasan && item.ulasan.length > 0 ? (
+          <ul className="mt-4 space-y-3">
+            {item.ulasan.map((u) => (
+              <li
+                key={u.id}
+                className="rounded-lg border bg-white p-4 shadow-sm flex justify-between items-start gap-4"
+              >
+                <div>
+                  <p className="font-semibold text-gray-900">
+                    {u.nama} ·{" "}
+                    <span className="text-amber-600 font-bold">
+                      {u.nilai}/5 ⭐
+                    </span>
+                  </p>
+                  <p className="mt-1 text-sm text-gray-600 leading-relaxed">
+                    {u.komentar}
+                  </p>
+                </div>
+                <form action={hapusUlasan.bind(null, u.id, item.id)}>
+                  <button
+                    type="submit"
+                    className="text-xs text-red-600 hover:text-red-800 underline font-medium"
+                  >
+                    Hapus ulasan
+                  </button>
+                </form>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-3 text-sm text-gray-500 italic">
+            Belum ada ulasan untuk produk ini.
+          </p>
+        )}
 
-        <div className="space-y-4">
-          {item.peringatanBahaya && (
-            <div className="rounded-lg border border-red-300 bg-red-50 p-4 text-red-900">
-              <h2 className="font-bold flex items-center gap-2">⚠️ Peringatan Keamanan & SOP</h2>
-              <p className="mt-1 text-xs leading-relaxed">{item.peringatanBahaya}</p>
-            </div>
-          )}
-
-          <div className="rounded-lg border p-4 bg-gray-50 space-y-2 text-sm">
-            <div>
-              <span className="text-gray-500">Nomor Registrasi:</span>{" "}
-              <strong className="text-gray-800">{item.nomorRegistrasi ?? "Terdaftar Resmi Kementan"}</strong>
-            </div>
-            <div>
-              <span className="text-gray-500">Asal Distributor:</span>{" "}
-              <span className="text-gray-800">{item.asalDaerah ?? "Distributor Resmi"}</span>
-            </div>
-            <div>
-              <span className="text-gray-500">Status Stok:</span>{" "}
-              {item.tersedia ? (
-                <strong className="text-emerald-700">Tersedia untuk Pengiriman</strong>
-              ) : (
-                <strong className="text-red-700">Sementara Tidak Tersedia</strong>
-              )}
-            </div>
-          </div>
-        </div>
+        <FormUlasan itemId={item.id} />
       </div>
 
       <div className="pt-4 border-t">
         <Link
           href="/katalog"
-          className="inline-flex items-center gap-2 text-emerald-700 hover:text-emerald-900 font-semibold underline"
+          className="text-emerald-700 hover:text-emerald-900 font-semibold underline text-sm"
         >
           ← Kembali ke Katalog AgroMarket
         </Link>
