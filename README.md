@@ -1,11 +1,12 @@
 # AgroMarket - Platform Marketplace Sarana Pertanian, Pupuk & Pestisida Terpadu
 
-Proyek aplikasi web terintegrasi untuk mata kuliah **Pengembangan Aplikasi Web** dan **Kriptografi**.
+Proyek aplikasi web terintegrasi untuk mata kuliah **Pengembangan Aplikasi Web**, **Kriptografi**, dan **Keamanan Siber**.
 
 * **Nama Mahasiswa**: Elisabeth Nainggolan
 * **NIM**: 105224037
 * **Repository**: [105224037_PraktikumPemWeb](https://github.com/Elisabethngl/105224037_PraktikumPemWeb.git)
-* **Versi Rilis / Tag Kriptografi**: `v0.1`
+* **Versi Rilis / Tag Kriptografi**: `v0.2` (Tugas 1: `v0.1`)
+* **Versi Rilis / Tag Keamanan Siber**: `sec-0.2` (Tugas 1: `sec-0.1`)
 
 ---
 
@@ -53,24 +54,62 @@ Aplikasi mengembangkan **6 komponen antarmuka yang dapat digunakan ulang**:
 ## 4. FONDASI DAN KOMPONEN KRIPTOGRAFI (TUGAS 1 KRIPTOGRAFI - TAG v0.1)
 
 ### A. Tabel Kebutuhan Kriptografi Produk
-Sesuai analisis ancaman keamanan pada produk AgroMarket, ditetapkan 3 data kritis yang wajib dilindungi dengan kriptografi modern:
+Sesuai analisis ancaman keamanan pada produk AgroMarket, ditetapkan 3 data kritis yang dilindungi:
 
 | No | Data Kritis Produk | Tujuan Keamanan (CIA Triad) | Algoritma Kriptografi Modern | Prioritas |
 | :---: | :--- | :--- | :--- | :---: |
-| 1 | **Data Pribadi Pemesan** (Nama Lengkap, Nomor Telepon, Alamat Pengiriman Lahan) | **Confidentiality & Integrity** (Kerahasiaan data pribadi petani agar tidak disalahgunakan pihak ketiga & deteksi sabotase rute pengiriman) | **AES-256-GCM** (Galois/Counter Mode terotentikasi, CSPRNG IV 12-byte, 128-bit Auth Tag) | **Tinggi (High)** |
-| 2 | **Kredensial Akun** (Password Akun Petani & Kios Distributor) | **Authentication & Integrity** (Mencegah pencurian akun, serangan kamus, dan rainbow table attack) | **Scrypt KDF** (Memory-hard key derivation function, parameter N=16384, r=8, p=1, Salt CSPRNG 16-byte) | **Sangat Tinggi (Critical)** |
-| 3 | **Izin Edar Pestisida** (Nomor Registrasi Kementan RI & Efikasi Pupuk) | **Integrity & Authenticity** (Membuktikan keaslian nomor registrasi produk dan mencegah manipulasi data efikasi racun) | **HMAC-SHA256** (Hash-based Message Authentication Code dengan secret key distributor) | **Tinggi (High)** |
-
-> *Catatan*: Sandi klasik (seperti Caesar, Vigenère, atau Substitution cipher) **TIDAK DIGUNAKAN** karena rentan terhadap analisis frekuensi dan tidak memenuhi standar keamanan produk digital modern.
+| 1 | **Data Pribadi Pemesan** (Nama Lengkap, Nomor Telepon, Alamat Pengiriman Lahan) | **Confidentiality & Integrity** | **AES-256-GCM** (CSPRNG IV 12-byte, 128-bit Auth Tag) | **Tinggi (High)** |
+| 2 | **Kredensial Akun** (Password Akun Petani & Kios Distributor) | **Authentication & Integrity** | **Scrypt KDF** (N=16384, r=8, p=1, Salt CSPRNG 16-byte) | **Kritis (Critical)** |
+| 3 | **Izin Edar Pestisida** (Nomor Registrasi Kementan RI) | **Integrity & Authenticity** | **HMAC-SHA256** (Secret key distributor) | **Tinggi (High)** |
 
 ---
 
-### B. Rancangan Komponen Kriptografi Dasar
-Modul diimplementasikan pada file `lib/agroCrypto.ts` menggunakan pustaka resmi terpelihara **`node:crypto`** (OpenSSL engine):
+## 5. ENKRIPSI TERAUTENTIKASI (AEAD), INTEGRITAS & HKDF (TUGAS 2 KRIPTOGRAFI - TAG v0.2)
 
-1. **Masukan - Proses - Keluaran**:
-   - **Enkripsi Data Pemesan**:
-     - *Masukan*: Plaintext data pribadi (string) + Kunci Simetris 256-bit (Buffer).
-     - *Proses*: Enkripsi simetris AES-256-GCM dengan *Initialization Vector* unik 12-byte dan kalkulasi Authentication Tag 16-byte.
-     - *Keluaran*: Objek enkripsi berformat `{ ciphertext, iv, authTag }`.
-   - **Password Hashing**:
+Pada milestone **`v0.2`**, seluruh arsitektur kriptografi diperkuat sesuai standar **NIST SP 800-38D**, **RFC 5869 (HKDF)**, dan prinsip **Gagal Tertutup (*Fail-Closed*)**.
+
+### A. Matriks Keputusan: Kebutuhan $\rightarrow$ Mekanisme $\rightarrow$ Alasan
+Dokumentasi lengkap tertuang pada [KEPUTUSAN.md](KEPUTUSAN.md):
+* **Data Pesanan & PII Petani** $\rightarrow$ **AEAD AES-256-GCM dengan AAD**: Mengikat metadata transaksi (`orderId`, `userId`, `timestamp`) ke dalam tag autentikasi untuk mematikan serangan *Context Transposition* dan *Replay Attack*.
+* **Izin Edar Pupuk/Pestisida** $\rightarrow$ **HMAC-SHA256**: Membuktikan keaslian asal dan mencegah pemalsuan formula racun kimia berbahaya tanpa terkena *Length Extension Attack*.
+* **Manajemen Kunci Terpusat** $\rightarrow$ **HKDF (RFC 5869)**: Menghindari celah *key reuse* dengan menurunkan sub-kunci domain pesanan dan lisensi dari satu Master Key luar.
+* **Penyimpanan Kredensial Tahan Brute-Force** $\rightarrow$ **Scrypt KDF (Slow Hash)**: Memory-hard ($N=16384$) menghentikan serangan kamus berbasis GPU/ASIC.
+
+### B. Parameter Terdokumentasi
+* **Panjang Kunci**: 256-bit (32 byte) CSPRNG.
+* **Nonce / IV**: 96-bit (12 byte) unik per enkripsi.
+* **Additional Authenticated Data (AAD)**: Mengikat metadata konteks transaksi.
+* **Authentication Tag**: 128-bit (16 byte) Galois Field GMAC tag.
+* **Penyimpanan Kunci di Luar Repositori**: Disimpan pada berkas `.env.local` (variabel `AGROMARKET_MASTER_KEY`), dilindungi `.gitignore` sehingga bebas dari kunci rahasia publik di GitHub.
+
+### C. Bukti Pengujian Otomatis (8 Skenario Lengkap: 4 Berhasil + 4 Fail-Closed Ditolak)
+
+Jalankan perintah pengujian:
+```bash
+npm test
+```
+
+![Bukti Pengujian Kriptografi AEAD v0.2](docs/hasil%20screenshot/uji-kriptografi-aead-v0.2.png)
+
+| Skenario | Kategori | Kondisi Pengujian | Hasil | Respons Keamanan |
+| :---: | :---: | :--- | :---: | :--- |
+| **SKENARIO 1** | Berhasil | Enkripsi & Dekripsi AEAD AES-256-GCM + AAD Konteks Transaksi | **PASS** | Ciphertext terdekripsi sempurna (1.37ms) |
+| **SKENARIO 2** | Berhasil | Derivasi Sub-Kunci Hirarkis Menggunakan HKDF (RFC 5869) | **PASS** | Domain separation kunci order & lisensi berhasil |
+| **SKENARIO 3** | Berhasil | Verifikasi Integritas Izin Edar Kementan (HMAC-SHA256) | **PASS** | Nomor izin edar asli tervalidasi sah (0.24ms) |
+| **SKENARIO 4** | Berhasil | Password Hashing Scrypt KDF & Verifikasi Waktu Konstan | **PASS** | Kredensial terotentikasi konstan waktu |
+| **SKENARIO 5** | Ditolak | **Modifikasi Ciphertext (Tampering)** | **PASS** | Ditolak keras (Auth Tag Mismatch - Fail-Closed) |
+| **SKENARIO 6** | Ditolak | **Manipulasi Metadata AAD Konteks Transaksi** | **PASS** | Ditolak keras (Integritas konteks gagal) |
+| **SKENARIO 7** | Ditolak | **Dekripsi dengan Kunci yang Salah (Wrong Key)** | **PASS** | Ditolak tanpa kebocoran plaintext |
+| **SKENARIO 8** | Ditolak | **Pemalsuan / Kerusakan Auth Tag Galois** | **PASS** | Ditolak seketika oleh cipher engine |
+
+*Panduan peragaan ujian lisan ±3 menit tersedia pada [DEMONSTRASI.md](DEMONSTRASI.md).*
+
+---
+
+## 6. KONTROL AKSES (RBAC) & SYSTEM HARDENING (TUGAS 2 KEAMANAN SIBER - TAG sec-0.2)
+
+1. **Matriks Akses & Uji Akses**: 12 Uji Positif dan 12 Uji Negatif (seimbang 50%-50%) mendeteksi dan menolak seluruh akses ilegal serta serangan IDOR ([security/access-tests.md](security/access-tests.md)).
+2. **Penyimpanan Hash Lambat**: Scrypt KDF terbukti 3.700× lebih lambat dari SHA-256, disajikan dengan *Zero-Knowledge Masking* tanpa membuka plaintext data pengguna nyata.
+3. **Hardening VM Ubuntu**: `PasswordAuthentication no`, `PermitRootLogin no`, dan Indeks Lynis mencapai skor **78 / 100** ([lynis-after.txt](lynis-after.txt)).
+4. **Hardening Container**: Non-root user (`UID 10001: nextjs`), `cap_drop: ALL`, read-only root, serta **port `app` (3000) dan `db` (5432) tidak dipublikasikan ke host**.
+5. **Pemindaian Kerentanan**: Laporan Trivy mencatat **0 kerentanan CRITICAL** ([image-scan-after.txt](image-scan-after.txt)) dan SBOM standar CycloneDX 1.5 JSON ([sbom.cdx.json](sbom.cdx.json)).
