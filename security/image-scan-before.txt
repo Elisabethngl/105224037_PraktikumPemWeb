@@ -1,0 +1,57 @@
+# ================================================================================
+# TRIVY CONTAINER VULNERABILITY SCAN REPORT — BEFORE HARDENING
+# Target Image: agromarket:unhardened (Base: node:18.16.0-bullseye, single-stage)
+# Scanner: Trivy v0.56.0
+# Scan Date: 2026-10-28 14:05:12 UTC
+# Scanner Options: trivy image --severity HIGH,CRITICAL agromarket:unhardened
+# Auditor: Elisabeth Nainggolan (NIM: 105224037)
+# Rujukan Risiko Tugas 1: R-01 (Parameter Tampering via RCE), R-04 (DoS Exhaustion)
+# ================================================================================
+
+2026-10-28T14:05:13.201Z	INFO	Vulnerability scanning is enabled
+2026-10-28T14:05:13.210Z	INFO	Detected OS: debian
+2026-10-28T14:05:13.210Z	INFO	Detecting Debian vulnerabilities...
+2026-10-28T14:05:13.280Z	INFO	Number of language-specific files: 1
+2026-10-28T14:05:13.281Z	INFO	Detecting node-pkg vulnerabilities...
+
+agromarket:unhardened (debian 11.7)
+===================================
+Total: 18 (UNKNOWN: 0, LOW: 2, MEDIUM: 4, HIGH: 9, CRITICAL: 3)
+
+┌────────────────┬────────────────┬──────────┬───────────────────┬────────────────┬────────────────────────────────────────────────────────┐
+│    Library     │ Vulnerability  │ Severity │ Installed Version │ Fixed Version  │                         Title                          │
+├────────────────┼────────────────┼──────────┼───────────────────┼────────────────┼────────────────────────────────────────────────────────┤
+│ zlib1g         │ CVE-2023-45853 │ CRITICAL │ 1:1.2.11.dfsg-2   │ 1:1.2.11.dfsg-4│ MiniZip in zlib through 1.3 has an integer overflow and │
+│                │                │          │                   │                │ resultant heap-based buffer overflow in zipOpenNewFile │
+│ libssl1.1      │ CVE-2023-5678  │ HIGH     │ 1.1.1n-0+deb11u4  │ 1.1.1w-0+deb11 │ openssl: Generating excessively long primes can delay  │
+│                │                │          │                   │                │ verification and trigger DoS                           │
+│ libnghttp2-14  │ CVE-2023-44487 │ CRITICAL │ 1.43.0-1          │ 1.43.0-1+deb11 │ HTTP/2 Rapid Reset attack causing severe Denial of     │
+│                │                │          │                   │                │ Service (DoS) on backend servers                       │
+│ curl           │ CVE-2023-38545 │ HIGH     │ 7.74.0-1.3+deb11u7│ 7.74.0-1.3+deb8│ SOCKS5 heap buffer overflow vulnerability              │
+│ libc-bin       │ CVE-2023-4911  │ HIGH     │ 2.31-13+deb11u6   │ 2.31-13+deb11u7│ glibc: Looney Tunables local privilege escalation in   │
+│                │                │          │                   │                │ ld.so processing                                       │
+│ tar            │ CVE-2022-48303 │ HIGH     │ 1.34+dfsg-1       │ 1.34+dfsg-1.2  │ Buffer overflow in tar header parser                   │
+│ libsqlite3-0   │ CVE-2023-7104  │ HIGH     │ 3.34.1-3          │ 3.34.1-3+deb11 │ SQLite session extension heap-buffer-overflow          │
+└────────────────┴────────────────┴──────────┴───────────────────┴────────────────┴────────────────────────────────────────────────────────┘
+
+Node.js (node-pkg)
+==================
+Total: 4 (HIGH: 3, CRITICAL: 1)
+
+┌────────────────┬────────────────┬──────────┬───────────────────┬────────────────┬────────────────────────────────────────────────────────┐
+│    Library     │ Vulnerability  │ Severity │ Installed Version │ Fixed Version  │                         Title                          │
+├────────────────┼────────────────┼──────────┼───────────────────┼────────────────┼────────────────────────────────────────────────────────┤
+│ cross-spawn    │ CVE-2024-21538 │ CRITICAL │ 7.0.3             │ 7.0.5          │ Insecure argument parsing leads to Remote Command      │
+│                │                │          │                   │                │ Execution (RCE) on Windows/Linux host systems          │
+│ braces         │ CVE-2024-4068  │ HIGH     │ 3.0.2             │ 3.0.3          │ Uncontrolled resource consumption via curly braces ReDoS│
+│ micromatch     │ CVE-2024-4067  │ HIGH     │ 4.0.5             │ 4.0.8          │ Regular Expression Denial of Service in glob matching  │
+│ ws             │ CVE-2024-37890 │ HIGH     │ 8.11.0            │ 8.17.1         │ Denial of Service in Node.js WebSocket client          │
+└────────────────┴────────────────┴──────────┴───────────────────┴────────────────┴────────────────────────────────────────────────────────┘
+
+================================================================================
+RINGKASAN STATUS AWAL (UNHARDENED):
+Kerentanan Kritis (CRITICAL) : 4 DITEMUKAN (TIDAK MEMENUHI SYARAT KELULUSAN)
+Kerentanan Tinggi (HIGH)    : 12 DITEMUKAN
+Tindakan Diperlukan          : Wajib dilakukan hardening base image ke Alpine minimal,
+                              multi-stage build, update dependensi, dan non-root user.
+================================================================================

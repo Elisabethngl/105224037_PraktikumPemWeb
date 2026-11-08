@@ -1,0 +1,131 @@
+# ================================================================================
+# LYNIS SECURITY AUDIT REPORT — BEFORE HARDENING (BASELINE AUDIT)
+# Hostname: agromarket-vm-prod
+# Operating System: Ubuntu Linux 22.04.4 LTS (GNU/Linux 5.15.0-107-generic x86_64)
+# Audit Mode: lynis audit system --quick
+# Date: 2026-10-28 09:14:22 UTC
+# Auditor: Elisabeth Nainggolan (NIM: 105224037)
+# Rujukan Risiko Tugas 1: T-08 (Kebocoran Kunci Rahasia), R-02 (Akses Ilegal ke DB)
+# ================================================================================
+
+[ Lynis 3.0.9 ]
+================================================================================
+  - Copyright 2007-2024 - CISOfy, https://cisofy.com/lynis/
+  - Program purpose: Security auditing, compliance testing, system hardening
+================================================================================
+
+[+] Initializing program
+------------------------------------
+  - Detecting OS...                                           [ Ubuntu Linux ]
+  - Checking profiles...                                      [ OK ]
+  - Program version:                                          [ 3.0.9 ]
+  - Operating system name:                                    [ Ubuntu ]
+  - Operating system version:                                 [ 22.04 ]
+  - Kernel version:                                           [ 5.15.0-107-generic ]
+
+[+] System Tools
+------------------------------------
+  - Scanning available binaries...                            [ OK ]
+
+[+] Boot and Services
+------------------------------------
+  - Service Manager                                           [ systemd ]
+  - Checking UEFI secure boot                                 [ DISABLED ]
+  - Checking presence GRUB2                                   [ FOUND ]
+  - Checking permissions of GRUB config                       [ WARNING ]
+
+[+] Kernel and Memory
+------------------------------------
+  - Checking core dumps configuration                         [ ENABLED ] (Suggestion KRNL-5820)
+  - Checking sysctl network settings...
+    * net.ipv4.ip_forward                                     [ 0 ]
+    * net.ipv4.conf.all.accept_redirects                      [ 1 ] (Suggestion NETW-3200)
+    * net.ipv4.conf.default.accept_redirects                  [ 1 ] (Suggestion NETW-3200)
+    * net.ipv4.conf.all.send_redirects                        [ 1 ] (Suggestion NETW-3200)
+    * net.ipv4.conf.all.accept_source_route                   [ 1 ] (Suggestion NETW-3200)
+    * net.ipv4.conf.all.rp_filter                             [ 0 ] (Suggestion NETW-3200)
+
+[+] Users, Groups and Authentication
+------------------------------------
+  - Administrator accounts                                    [ FOUND (1) ]
+  - Checking shadow file format                               [ OK ]
+  - Password hashing algorithm                                [ SHA512 ]
+  - Password aging settings                                   [ NOT CONFIGURED ] (Suggestion AUTH-9286)
+  - Minimum password length policy                            [ NONE ] (Suggestion AUTH-9288)
+
+[+] SSH Support (SSH-7408)
+------------------------------------
+  - Checking running SSH daemon                               [ FOUND ]
+  - Checking SSH daemon configuration file                    [ FOUND ]
+    * OpenSSH option: PermitRootLogin                         [ YES ] (WARNING SSH-7412)
+    * OpenSSH option: PasswordAuthentication                  [ YES ] (WARNING SSH-7414)
+    * OpenSSH option: PubkeyAuthentication                    [ YES ]
+    * OpenSSH option: Port                                    [ 22 ]
+    * OpenSSH option: Protocol                                [ 2 ]
+    * OpenSSH option: MaxAuthTries                            [ 6 ] (Suggestion SSH-7416)
+    * OpenSSH option: X11Forwarding                           [ YES ] (Suggestion SSH-7420)
+    * OpenSSH option: ClientAliveInterval                     [ 0 ] (Suggestion SSH-7422)
+
+[+] Shells and Logins
+------------------------------------
+  - Checking legal banner (/etc/issue, /etc/issue.net)        [ NOT FOUND ] (Suggestion BANN-7126)
+  - Checking shell history files                              [ FOUND ]
+
+[+] File Systems and Storage
+------------------------------------
+  - Checking mount options (/tmp, /var, /home)                [ DEFAULT ]
+  - Checking root directory permissions                       [ 755 ] (Suggestion FILE-7524)
+
+[+] Software: Packages and Compilers
+------------------------------------
+  - Installed compilers (gcc, make)                           [ ACCESSIBLE TO ALL USERS ] (Suggestion HRDN-7220)
+  - Package manager                                           [ apt ]
+  - Checking package updates                                  [ 12 UPDATES AVAILABLE ]
+
+[+] Networking and Firewalls
+------------------------------------
+  - Checking active firewall                                  [ NOT ACTIVE ] (WARNING FIRE-4512)
+  - Open ports: 22 (SSH), 80 (HTTP), 3000 (Node.js)          [ FOUND ]
+
+[+] Logging and Auditing
+------------------------------------
+  - Checking syslog daemon                                    [ rsyslog ]
+  - Checking audit daemon (auditd)                            [ NOT RUNNING ] (Suggestion LOGG-2138)
+
+================================================================================
+  Lynis security scan details:
+
+  Hardening index : 58 [#############       ]
+  Tests performed : 246
+  Plugins enabled : 1
+
+  Components:
+  - Firewall               [ DISABLED ]
+  - Malware scanner        [ NOT FOUND ]
+  - SSH Hardening          [ UNHARDENED ]
+  - Kernel Hardening       [ DEFAULT ]
+
+  Warnings (4):
+  ----------------------------
+  ! SSH option 'PermitRootLogin' is enabled [SSH-7412]
+  ! SSH option 'PasswordAuthentication' is enabled [SSH-7414]
+  ! No active firewall detected on system [FIRE-4512]
+  ! GRUB configuration file is world-readable [BOOT-5122]
+
+  Suggestions (18):
+  ----------------------------
+  * Set password aging controls in /etc/login.defs [AUTH-9286]
+  * Configure minimum and maximum password length [AUTH-9288]
+  * Restrict compiler access to root user only [HRDN-7220]
+  * Set legal notice banner in /etc/issue and /etc/issue.net [BANN-7126]
+  * Disable core dumps via sysctl and security limits [KRNL-5820]
+  * Disable ICMP redirects and source routing via sysctl [NETW-3200]
+  * Enable TCP SYN cookies via net.ipv4.tcp_syncookies [NETW-3202]
+  * Install and activate auditd service [LOGG-2138]
+  * Restrict SSH MaxAuthTries to 3 [SSH-7416]
+  * Disable SSH X11Forwarding [SSH-7420]
+  * Set SSH ClientAliveInterval to 300 seconds [SSH-7422]
+
+================================================================================
+  [ Lynis baseline audit completed. Score: 58 / 100 ]
+================================================================================

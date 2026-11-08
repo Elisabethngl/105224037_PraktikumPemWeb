@@ -16,9 +16,17 @@ export async function masuk(
   }
   const { email, kataSandi } = hasil.data;
   const demoEmail = process.env.DEMO_EMAIL || "pengelola@agromarket.com";
-  const demoKataSandi = process.env.DEMO_KATA_SANDI || "pertanian2026";
 
-  if (email !== demoEmail || kataSandi !== demoKataSandi) {
+  // Kata sandi disimpan sebagai hash lambat Scrypt KDF dengan Salt CSPRNG (Tugas 2)
+  const storedSalt = process.env.DEMO_HASH_SALT || "4a7f9c2e1b8d3a6f5e0c7b2a9d4f8e1c";
+  const storedHash =
+    process.env.DEMO_PASSWORD_HASH ||
+    "e7207738d45fab02928bcbbeecca4dd8d09a0529e6a20f9c986799d294f7ff2fc9d4d21e39bd716464cca1d54e587c1b0ee6b9aeb37c31f57484af1751f9f676";
+
+  const { verifyPassword } = await import("@/lib/agroCrypto");
+  const isMatch = verifyPassword(kataSandi, storedSalt, storedHash);
+
+  if (email !== demoEmail || !isMatch) {
     return { pesan: "Email atau kata sandi salah." };
   }
   await buatSesi(email);

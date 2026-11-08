@@ -1,0 +1,95 @@
+# ==============================================================================
+# DOCKER COMPOSE HARDENED STACK — AGROMARKET
+# Tugas 2 Keamanan Siber (Penanda sec-0.2)
+#
+# Kriteria Kepatuhan Rubrik:
+# 1. Pengguna Non-Root: App (UID 10001), DB (UID 999).
+# 2. Capability Dibatasi: cap_drop ALL, security_opt no-new-privileges.
+# 3. Port app (3000) dan db (5432) TIDAK DIPUBLIKASIKAN ke host publik (Isolated).
+# 4. Rujukan Risiko Tugas 1:
+#    - R-02 / T-07: Mengisolasi database dari paparan internet publik.
+#    - T-10: Mencegah Container Escape via capability dropping & non-root user.
+# ==============================================================================
+
+version: '3.8'
+
+services:
+  # ============================================================================
+  # SERVICE 1: POSTGRESQL 18 DATABASE (DS-01 ORDER STORE & DS-02 KATALOG)
+  # ============================================================================
+  db:
+    image: postgres:17-alpine
+    container_name: agromarket-db
+    restart: unless-stopped
+    # 1. Non-root user: PostgreSQL dijalankan sebagai UID 999 (postgres)
+    user: "999:999"
+    # 2. Pembatasan Capability: Lepas semua kapabilitas Linux bawaan
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETUID
+      - SETGID
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      POSTGRES_USER: ${DB_USER:-agromarket_admin}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-RahasiaAgro2026!Db}
+      POSTGRES_DB: ${DB_NAME:-agromarket}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    # 3. PORT TIDAK DIPUBLIKASIKAN KE HOST (Hanya expose ke jaringan internal)
+    expose:
+      - "5432"
+    networks:
+      - agro-internal-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agromarket_admin -d agromarket || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ============================================================================
+  # SERVICE 2: AGROMARKET NEXT.JS APPLICATION RUNTIME
+  # ============================================================================
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: agromarket-app
+    restart: unless-stopped
+    # 1. Non-root user: Next.js dijalankan sebagai pengguna nextjs (UID 10001)
+    user: "10001:10001"
+    # 2. Pembatasan Capability Ketat: Hapus SEMUA kemampuan privileged
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    # Read-Only Root Filesystem untuk mencegah modifikasi binary / injeksi webshell
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=64M
+      - /app/.next/cache:rw,noexec,nosuid,size=128M
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: "postgresql://agromarket_admin:RahasiaAgro2026!Db@db:5432/agromarket?schema=public"
+      DEMO_HASH_SALT: "${DEMO_HASH_SALT:-4a7f9c2e1b8d3a6f5e0c7b2a9d4f8e1c}"
+      DEMO_PASSWORD_HASH: "${DEMO_PASSWORD_HASH:-e7207738d45fab02928bcbbeecca4dd8d09a0529e6a20f9c986799d294f7ff2fc9d4d21e39bd716464cca1d54e587c1b0ee6b9aeb37c31f57484af1751f9f676}"
+    depends_on:
+      db:
+        condition: service_healthy
+    # 3. PORT TIDAK DIPUBLIKASIKAN KE HOST (Tidak ada direct 0.0.0.0:3000 mapping)
+    expose:
+      - "3000"
+    networks:
+      - agro-internal-net
+
+networks:
+  # Jaringan internal terisolasi: Tidak memiliki gateway publik eksternal langsung
+  agro-internal-net:
+    driver: bridge
+    internal: true
+
+volumes:
+  db_data:
+    driver: local

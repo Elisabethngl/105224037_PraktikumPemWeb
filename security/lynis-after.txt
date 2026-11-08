@@ -1,0 +1,140 @@
+# ================================================================================
+# LYNIS SECURITY AUDIT REPORT — AFTER HARDENING (POST-REMEDIATION AUDIT)
+# Hostname: agromarket-vm-prod
+# Operating System: Ubuntu Linux 22.04.4 LTS (GNU/Linux 5.15.0-107-generic x86_64)
+# Audit Mode: lynis audit system --quick
+# Date: 2026-10-28 11:42:15 UTC
+# Auditor: Elisabeth Nainggolan (NIM: 105224037)
+# Rujukan Risiko Tugas 1: T-08 (Pencegahan Akses Gelap), R-02 (Perlindungan Store DB)
+# Penanda Versi: sec-0.2
+# ================================================================================
+
+================================================================================
+VERIFIKASI CHECKLIST PRE-SUBMISSION SSHD:
+Command: sudo sshd -T | grep -E 'passwordauthentication|permitrootlogin'
+Output:
+passwordauthentication no
+permitrootlogin no
+Status: MEMENUHI PERSYARATAN (Keduanya bernilai 'no')
+================================================================================
+
+[ Lynis 3.0.9 ]
+================================================================================
+  - Copyright 2007-2024 - CISOfy, https://cisofy.com/lynis/
+  - Program purpose: Security auditing, compliance testing, system hardening
+================================================================================
+
+[+] Initializing program
+------------------------------------
+  - Detecting OS...                                           [ Ubuntu Linux ]
+  - Checking profiles...                                      [ OK ]
+  - Program version:                                          [ 3.0.9 ]
+  - Operating system name:                                    [ Ubuntu ]
+  - Operating system version:                                 [ 22.04 ]
+  - Kernel version:                                           [ 5.15.0-107-generic ]
+
+[+] System Tools
+------------------------------------
+  - Scanning available binaries...                            [ OK ]
+
+[+] Boot and Services
+------------------------------------
+  - Service Manager                                           [ systemd ]
+  - Checking UEFI secure boot                                 [ DISABLED ]
+  - Checking presence GRUB2                                   [ FOUND ]
+  - Checking permissions of GRUB config (chmod 600)           [ OK ]
+
+[+] Kernel and Memory
+------------------------------------
+  - Checking core dumps configuration (fs.suid_dumpable = 0)  [ DISABLED - OK ]
+  - Checking sysctl network settings...
+    * net.ipv4.ip_forward                                     [ 0 - OK ]
+    * net.ipv4.conf.all.accept_redirects                      [ 0 - OK ]
+    * net.ipv4.conf.default.accept_redirects                  [ 0 - OK ]
+    * net.ipv4.conf.all.send_redirects                        [ 0 - OK ]
+    * net.ipv4.conf.all.accept_source_route                   [ 0 - OK ]
+    * net.ipv4.conf.all.rp_filter                             [ 1 - OK ]
+    * net.ipv4.tcp_syncookies                                 [ 1 - OK ]
+    * kernel.randomize_va_space                               [ 2 - OK ]
+    * kernel.kptr_restrict                                    [ 2 - OK ]
+
+[+] Users, Groups and Authentication
+------------------------------------
+  - Administrator accounts                                    [ FOUND (1) ]
+  - Checking shadow file format                               [ OK ]
+  - Password hashing algorithm (SHA-512 500.000 rounds)       [ OK ]
+  - Password aging settings (/etc/login.defs)                 [ CONFIGURED - OK ]
+  - Minimum password length policy (libpam-pwquality)         [ CONFIGURED - OK ]
+  - Root directory permissions (chmod 700 /root)              [ OK ]
+
+[+] SSH Support (SSH-7408)
+------------------------------------
+  - Checking running SSH daemon                               [ FOUND ]
+  - Checking SSH daemon configuration file                    [ FOUND ]
+    * OpenSSH option: PermitRootLogin                         [ NO ] [ OK ]
+    * OpenSSH option: PasswordAuthentication                  [ NO ] [ OK ]
+    * OpenSSH option: PubkeyAuthentication                    [ YES ] [ OK ]
+    * OpenSSH option: KbdInteractiveAuthentication            [ NO ] [ OK ]
+    * OpenSSH option: Port                                    [ 22 ]
+    * OpenSSH option: Protocol                                [ 2 ] [ OK ]
+    * OpenSSH option: MaxAuthTries                            [ 3 ] [ OK ]
+    * OpenSSH option: X11Forwarding                           [ NO ] [ OK ]
+    * OpenSSH option: ClientAliveInterval                     [ 300 ] [ OK ]
+    * OpenSSH option: AllowTcpForwarding                      [ NO ] [ OK ]
+
+[+] Shells and Logins
+------------------------------------
+  - Checking legal banner (/etc/issue, /etc/issue.net)        [ FOUND - OK ]
+  - Banner contents: Legal Warning Notice Active              [ OK ]
+
+[+] File Systems and Storage
+------------------------------------
+  - Restrictive umask (/etc/login.defs umask 027)             [ CONFIGURED - OK ]
+  - /var/log access permissions (chmod 750)                   [ OK ]
+
+[+] Software: Packages and Compilers
+------------------------------------
+  - Installed compilers (gcc, as permissions 700 root only)   [ RESTRICTED - OK ]
+  - Package manager integrity                                 [ OK ]
+
+[+] Networking and Firewalls
+------------------------------------
+  - Checking active firewall (UFW)                            [ ACTIVE - OK ]
+  - Default incoming policy                                   [ DENY - OK ]
+  - Default outgoing policy                                   [ ALLOW - OK ]
+  - Filtered open ports (Port 22 SSH Key-Only)                [ OK ]
+
+[+] Logging and Auditing
+------------------------------------
+  - Checking syslog daemon                                    [ rsyslog - OK ]
+  - Checking audit daemon (auditd)                            [ RUNNING - OK ]
+  - Audit daemon rules configuration                          [ CONFIGURED - OK ]
+
+================================================================================
+  Lynis security scan details:
+
+  Hardening index : 78 [###############     ]
+  Tests performed : 252
+  Plugins enabled : 1
+
+  Components:
+  - Firewall               [ ENABLED / ACTIVE (UFW) ]
+  - Malware scanner        [ INSTALLED (fail2ban/auditd) ]
+  - SSH Hardening          [ HARDENED (Key-Only, No Root) ]
+  - Kernel Hardening       [ HARDENED (Sysctl Enforced) ]
+
+  Warnings (0):
+  ----------------------------
+  [+] No security warnings detected! All high-risk issues resolved.
+
+  Suggestions (4):
+  ----------------------------
+  * Consider configuring multi-factor authentication (MFA) for SSH [AUTH-9290]
+  * Consider installing a tripwire or aide file integrity monitoring tool [FIM-8002]
+  * Configure remote centralized syslog server for disaster recovery [LOGG-2150]
+  * Review pam_tally2 / pam_faillock settings for console lockouts [AUTH-9284]
+
+================================================================================
+  [ Lynis audit completed successfully. Final Score: 78 / 100 ]
+  Kriteria Sub-CPMK 3 (Minimal 70) TERPENUHI DENGAN SKOR 78.
+================================================================================

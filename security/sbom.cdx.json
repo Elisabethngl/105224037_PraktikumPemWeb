@@ -1,0 +1,414 @@
+{
+  "$schema": "http://cyclonedx.org/schema/bom-1.5.json",
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.5",
+  "serialNumber": "urn:uuid:e899fbf5-6264-456f-b540-7547e42ce4c0",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-11-08T14:11:33.698194+00:00",
+    "tools": [
+      {
+        "vendor": "CycloneDX",
+        "name": "CycloneDX-Generator",
+        "version": "1.5.0"
+      }
+    ],
+    "authors": [
+      {
+        "name": "Elisabeth Nainggolan",
+        "email": "sabethngl742@gmail.com"
+      }
+    ],
+    "component": {
+      "type": "application",
+      "bom-ref": "pkg:npm/agromarket@0.1.0",
+      "name": "agromarket",
+      "version": "0.1.0",
+      "description": "AgroMarket \u2014 Marketplace Sarana Produksi Pertanian Terpadu",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "purl": "pkg:npm/agromarket@0.1.0"
+    }
+  },
+  "components": [
+    {
+      "type": "operating-system",
+      "bom-ref": "pkg:generic/alpine-linux@3.20.3?os=linux&arch=x86_64",
+      "name": "Alpine Linux",
+      "version": "3.20.3",
+      "description": "Hardened container base operating system",
+      "licenses": [
+        {
+          "license": {
+            "name": "GPL-2.0-only"
+          }
+        }
+      ],
+      "purl": "pkg:generic/alpine-linux@3.20.3"
+    },
+    {
+      "type": "framework",
+      "bom-ref": "pkg:generic/node@20.18.0",
+      "name": "Node.js Runtime Environment",
+      "version": "20.18.0-alpine",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "purl": "pkg:generic/node@20.18.0"
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/@prisma/adapter-pg@7.10.1",
+      "name": "@prisma/adapter-pg",
+      "version": "7.10.1",
+      "scope": "required",
+      "purl": "pkg:npm/@prisma/adapter-pg@7.10.1",
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/@prisma/client@7.10.1",
+      "name": "@prisma/client",
+      "version": "7.10.1",
+      "scope": "required",
+      "purl": "pkg:npm/@prisma/client@7.10.1",
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/@tailwindcss/turbopack@4",
+      "name": "@tailwindcss/turbopack",
+      "version": "4",
+      "scope": "optional",
+      "purl": "pkg:npm/@tailwindcss/turbopack@4",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/@types/node@20",
+      "name": "@types/node",
+      "version": "20",
+      "scope": "optional",
+      "purl": "pkg:npm/@types/node@20",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/@types/pg@8.23.1",
+      "name": "@types/pg",
+      "version": "8.23.1",
+      "scope": "optional",
+      "purl": "pkg:npm/@types/pg@8.23.1",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/@types/react@19",
+      "name": "@types/react",
+      "version": "19",
+      "scope": "optional",
+      "purl": "pkg:npm/@types/react@19",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/@types/react-dom@19",
+      "name": "@types/react-dom",
+      "version": "19",
+      "scope": "optional",
+      "purl": "pkg:npm/@types/react-dom@19",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/dotenv@18.0.9",
+      "name": "dotenv",
+      "version": "18.0.9",
+      "scope": "required",
+      "purl": "pkg:npm/dotenv@18.0.9",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/eslint@9",
+      "name": "eslint",
+      "version": "9",
+      "scope": "optional",
+      "purl": "pkg:npm/eslint@9",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/eslint-config-next@16.4.0",
+      "name": "eslint-config-next",
+      "version": "16.4.0",
+      "scope": "optional",
+      "purl": "pkg:npm/eslint-config-next@16.4.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/lucide-react@1.16.0",
+      "name": "lucide-react",
+      "version": "1.16.0",
+      "scope": "required",
+      "purl": "pkg:npm/lucide-react@1.16.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/next@16.4.0",
+      "name": "next",
+      "version": "16.4.0",
+      "scope": "required",
+      "purl": "pkg:npm/next@16.4.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/pg@8.23.1",
+      "name": "pg",
+      "version": "8.23.1",
+      "scope": "required",
+      "purl": "pkg:npm/pg@8.23.1",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/prisma@7.10.1",
+      "name": "prisma",
+      "version": "7.10.1",
+      "scope": "optional",
+      "purl": "pkg:npm/prisma@7.10.1",
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/react@19.3.0",
+      "name": "react",
+      "version": "19.3.0",
+      "scope": "required",
+      "purl": "pkg:npm/react@19.3.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/react-dom@19.3.0",
+      "name": "react-dom",
+      "version": "19.3.0",
+      "scope": "required",
+      "purl": "pkg:npm/react-dom@19.3.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/server-only@0.0.1",
+      "name": "server-only",
+      "version": "0.0.1",
+      "scope": "required",
+      "purl": "pkg:npm/server-only@0.0.1",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/tailwindcss@4",
+      "name": "tailwindcss",
+      "version": "4",
+      "scope": "optional",
+      "purl": "pkg:npm/tailwindcss@4",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/tsx@4.23.15",
+      "name": "tsx",
+      "version": "4.23.15",
+      "scope": "optional",
+      "purl": "pkg:npm/tsx@4.23.15",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/typescript@5",
+      "name": "typescript",
+      "version": "5",
+      "scope": "optional",
+      "purl": "pkg:npm/typescript@5",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/zod@4.6.7",
+      "name": "zod",
+      "version": "4.6.7",
+      "scope": "required",
+      "purl": "pkg:npm/zod@4.6.7",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "ref": "pkg:npm/agromarket@0.1.0",
+      "dependsOn": [
+        "pkg:generic/alpine-linux@3.20.3?os=linux&arch=x86_64",
+        "pkg:generic/node@20.18.0",
+        "pkg:npm/@prisma/adapter-pg@7.10.1",
+        "pkg:npm/@prisma/client@7.10.1",
+        "pkg:npm/@tailwindcss/turbopack@4",
+        "pkg:npm/@types/node@20",
+        "pkg:npm/@types/pg@8.23.1",
+        "pkg:npm/@types/react@19",
+        "pkg:npm/@types/react-dom@19",
+        "pkg:npm/dotenv@18.0.9",
+        "pkg:npm/eslint@9",
+        "pkg:npm/eslint-config-next@16.4.0",
+        "pkg:npm/lucide-react@1.16.0",
+        "pkg:npm/next@16.4.0",
+        "pkg:npm/pg@8.23.1",
+        "pkg:npm/prisma@7.10.1",
+        "pkg:npm/react@19.3.0",
+        "pkg:npm/react-dom@19.3.0",
+        "pkg:npm/server-only@0.0.1",
+        "pkg:npm/tailwindcss@4",
+        "pkg:npm/tsx@4.23.15",
+        "pkg:npm/typescript@5",
+        "pkg:npm/zod@4.6.7"
+      ]
+    }
+  ]
+}
